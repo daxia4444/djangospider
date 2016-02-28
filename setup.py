@@ -2,7 +2,6 @@ from setuptools import setup, find_packages
 import os
 
 packages=find_packages()
-print packages
 
 setup(
     name='djangospider',

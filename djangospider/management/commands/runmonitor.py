@@ -15,7 +15,7 @@ class Command(object):
             npos2=path.rfind("/",0,npos1)
             path=path[0:npos2]
             path=path+"/monitor"
-            cmd=" cd  %s ; python manage.py runserver " %path
+            cmd=" cd  %s ; python manage.py runserver  0.0.0.0:8000  " %path
             (status, output) = commands.getstatusoutput(cmd)
 
         except KeyboardInterrupt:

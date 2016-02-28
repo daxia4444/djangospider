@@ -17,7 +17,7 @@ def sysinfo(request):
     print " i come into info sysinfo"
 
     mem_usage=get_mem()
-    net_usage=get_netstat("wlan0") 
+    net_usage=get_netstat("eth0") 
     cpu_usage=get_cpu_usage()
     info={"mem_usage":mem_usage,"net_usage":net_usage,"cpu_usage":cpu_usage}
 
