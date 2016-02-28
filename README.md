@@ -52,3 +52,6 @@
 
 *	`$djangospider runmonitor`
 *	visit `http://127.0.0.1:8000/index/sysinfo/`
+
+
+![](https://github.com/daxia4444/djangospider/blob/master/doc/djangospider.jpg)
