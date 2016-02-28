@@ -1,0 +1,258 @@
+{% load staticfiles %}
+
+<html>
+<head>
+
+	<script src="{%    static  "js/jquery.min.js"  %}"></script>
+	<script src="{%    static  "js/Chart.min.js"   %}"></script>
+	<title>DjangoSpider</title>
+
+<style type="text/css">
+.Square {
+    width: 40px;
+    height: 40px;
+    float: left;
+
+    }
+
+.block {
+    width: 60px;
+    float: left;
+
+}
+
+</style>
+
+</head>
+<body>
+<p> Net Info </p>
+<canvas id="myChart" width="500" height="250"></canvas>
+<div>
+    <div  class="block">
+        <div class="Square" style="background:rgb(0,255,0)"></div>
+        <br/>
+        <P class="name"   style="color:rgb(0,255,0) ">Net in</P>
+    </div>
+
+
+    <div  class="block" style="margin-left:40px;">
+        <div class="Square" style="background:rgb(151,187,205);"></div>
+        <br/>
+        <P class="name"  style="color:rgb(151,187,205) ">Net out</P>
+    </div>
+
+
+</div>
+<div style="clear: both" ></div>
+<p> Mem Info </p>
+<canvas id="myChart1" width="500" height="250"></canvas>
+<div>
+    <div  class="block">
+        <div class="Square" style="background:rgb(0,255,0)"></div>
+        <br/>
+        <P class="name"   style="color:rgb(0,255,0) ">Mem usage</P>
+    </div>
+
+
+    <div  class="block" style="margin-left:40px;">
+        <div class="Square" style="background:rgb(151,187,205);"></div>
+        <br/>
+        <P class="name"  style="color:rgb(151,187,205) ">Mem free</P>
+    </div>
+
+
+</div>
+<div style="clear: both" ></div>
+
+
+
+<p> Cpu Info </p>
+<canvas id="myChart2" width="500" height="250"></canvas>
+<br>
+<div  class="block">
+    <div class="Square" style="background:rgb(0,255,0)"></div>
+    <br/>
+    <P class="name"   style="color:rgb(0,255,0) ">Cpu usage</P>
+</div>
+
+<script type="text/javascript">
+
+
+        var Memlabel=new Array();
+        for(var i=0;i<=29;i++)
+        {
+            Memlabel.push(0);
+        }
+
+
+        var Netlabel=new Array();
+        for(var i=0;i<=29;i++)
+        {
+            Netlabel.push(0);
+        }
+
+        var Cpulabel=new Array();
+        for(var i=0;i<=29;i++)
+        {
+            Cpulabel.push(0);
+        }
+
+
+        var dataInit=new Array();
+        for (var i=29;i>=0;i--)
+        {
+            dataInit.push(0);
+        }
+
+
+        var dataNet = {
+            labels:Netlabel ,
+            datasets: [
+                {
+                    label: "Net in",
+                    fillColor: "rgba(0,255,0,0.5)",
+                    strokeColor: "rgba(0,255,0,1)",
+                    pointColor: "rgba(0,255,0,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                   
+                    data: dataInit
+                },
+                {
+                    label: "Net out",
+                    fillColor: "rgba(151,187,205,0.6)",
+                    strokeColor: "rgba(151,187,205,1)",
+                    pointColor: "rgba(151,187,205,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+              
+                    data: dataInit
+                }
+            ]
+        };
+
+
+        var dataMem = {
+            labels:Memlabel ,
+            datasets: [
+                {
+                    label: "Mem usage",
+                    fillColor: "rgba(0,255,0,0.5)",
+                    strokeColor: "rgba(0,255,0,1)",
+                    pointColor: "rgba(0,255,0,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                   
+                    data: dataInit
+                },
+                {
+                    label: "Mem free",
+                    fillColor: "rgba(151,187,205,0.6)",
+                    strokeColor: "rgba(151,187,205,1)",
+                    pointColor: "rgba(151,187,205,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    data: dataInit
+                }
+            ]
+        };
+
+
+
+        var dataCpu = {
+            labels:Cpulabel ,
+            datasets: [
+                {
+                    label: "Cpu usage",
+                    fillColor: "rgba(0,255,0,0.5)",
+                    strokeColor: "rgba(0,255,0,1)",
+                    pointColor: "rgba(0,255,0,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                   
+                    data: dataInit
+                },
+
+            ]
+        };
+
+
+
+
+        var options = {
+        animation : false,
+        pointDotRadius : 4,
+        scaleLabel : "<%=value%> KB"}
+
+
+    var lastRecve=null,lastSend=null;
+
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var NetLineChart = new Chart(ctx).Line(dataNet, options);
+
+
+            options = {
+        animation : false,
+        pointDotRadius : 4,
+        scaleLabel : "<%=value%> MB"}
+
+
+    var ctx = document.getElementById("myChart1").getContext("2d");
+    var MemLineChart = new Chart(ctx).Line(dataMem, options);
+
+
+         options = {
+        animation : false,
+        pointDotRadius : 4,
+        scaleLabel : "<%=value%> %"}
+
+
+    var ctx = document.getElementById("myChart2").getContext("2d");
+    var CpuLineChart = new Chart(ctx).Line(dataCpu, options);
+
+        function system_state(){
+        $.getJSON('/index/info/sys/', function(data) {
+       
+       var mem_usage=data["mem_usage"];
+       console.log(mem_usage);
+              
+       MemLineChart.addData([mem_usage.usage,mem_usage.free],"s");
+       MemLineChart.removeData();
+       
+
+       var net_usage=data["net_usage"];
+       console.log(net_usage);
+       var current_in=0,current_out=0;
+       if(lastRecve==null)
+       {
+        lastRecve=net_usage.traffic_in;
+        lastSend=net_usage.traffic_out;
+       }
+       else
+       {
+        current_in= (net_usage.traffic_in - lastRecve)/(1024);
+        current_out=(net_usage.traffic_out - lastSend)/(1024);
+        lastRecve=net_usage.traffic_in;
+        lastSend=net_usage.traffic_out;
+       }
+       
+       NetLineChart.addData([current_in,current_out],"s");
+       NetLineChart.removeData();
+
+       var cpu_usage=data["cpu_usage"].cpu_usage;
+       CpuLineChart.addData([cpu_usage],"s") 
+        CpuLineChart.removeData();  
+        });
+    }
+    setInterval(system_state,3000);
+   // system_state();
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

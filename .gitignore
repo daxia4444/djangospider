@@ -1,0 +1,4 @@
+build
+dist
+*.pyc
+djangospider.egg-info
