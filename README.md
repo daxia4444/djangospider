@@ -1,7 +1,7 @@
 
 #  djangospider
 
-	djangospider is light web crawling framework, it have a few code, but
+	djangospider is light web crawling framework, it have a little code, but it
 	can do high speed crawling, it support three modes to crawl: multithreading,
 	tornado IOloop, and twisted reactor.you can understand to how to use
 	async crawler easily.
