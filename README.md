@@ -43,8 +43,14 @@
 
 	def callback(response,url):
 		print "get the %s" %url
+	
+	if __name__ == '__main__':
+		try:
+			start_urls=[('http://github.com/',callback),]
+			Start(start_urls,2)
+		except  Exception as e:
+			logger.exception(e)
 
-	start_urls=[('http://github.com/',callback),]
 	
 ## System monitor
 
